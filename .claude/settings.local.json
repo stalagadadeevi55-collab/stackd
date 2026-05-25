@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "PowerShell(winget *)",
+      "PowerShell(gh repo *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\projectladdu\\\\stackd\" -Recurse -Depth 3)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Out-String -Width 250)",
+      "Bash(npm install *)",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(gh api *)",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\projectladdu\\\\stackd\\\\supabase\\\\functions\\\\ai-advisor\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"done\")"
+    ]
+  }
+}
