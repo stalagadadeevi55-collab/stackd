@@ -187,6 +187,18 @@ const SUMMARY_SECTIONS: { title: string; fields: (keyof AIProfileDraft)[]; cols:
 
 const SUMMARY_FIELD_MAP = new Map(SUMMARY_FIELDS.map((field) => [field.key, field]));
 
+function parseNumericInput(value: string) {
+  return parseFloat(value.replace(/[^0-9.-]/g, '')) || 0;
+}
+
+function formatCurrencyInput(value: string | number) {
+  const numeric = typeof value === 'number' ? value : parseNumericInput(value);
+  if (!numeric) return '';
+  return numeric.toLocaleString('en-US', {
+    maximumFractionDigits: 0,
+  });
+}
+
 export function OnboardingChat() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -275,7 +287,12 @@ export function OnboardingChat() {
     if (!draft) return null;
 
     const rawVal = draft[field.key];
-    const val = rawVal === null || rawVal === undefined ? '' : String(rawVal);
+    const isCurrency = field.prefix === '$';
+    const val = rawVal === null || rawVal === undefined
+      ? ''
+      : isCurrency
+        ? formatCurrencyInput(rawVal as string | number)
+        : String(rawVal);
 
     if (field.type === 'select' && field.options) {
       return (
@@ -306,12 +323,13 @@ export function OnboardingChat() {
             <span className="absolute left-3 text-gray-400 text-sm font-mono select-none">{field.prefix}</span>
           )}
           <input
-            type={field.type === 'number' ? 'number' : 'text'}
+            type={isCurrency || field.type !== 'number' ? 'text' : 'number'}
+            inputMode={field.type === 'number' ? 'decimal' : undefined}
             value={val}
             className={`w-full min-w-0 bg-gray-50 border border-black/10 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 ${field.prefix ? 'pl-7' : ''} ${field.suffix ? 'pr-16' : ''}`}
             onChange={(e) => updateDraft(
               field.key,
-              field.type === 'number' ? (parseFloat(e.target.value) || 0) : e.target.value
+              field.type === 'number' ? parseNumericInput(e.target.value) : e.target.value
             )}
           />
           {field.suffix && (
